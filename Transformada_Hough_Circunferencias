@@ -1,0 +1,50 @@
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Ruta de la imagen (verifica que sea correcta)
+image_path = r'C:\hop.png'
+
+# Cargar la imagen
+image = cv2.imread(image_path)
+
+# Verificar si la imagen se cargó correctamente
+if image is None:
+    print("Error: no se pudo cargar la imagen en la ruta especificada.")
+else:
+    print("Imagen cargada correctamente.")
+
+    # Mostrar la imagen original
+    plt.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+    plt.title('Imagen Original')
+    plt.axis('off')
+    plt.show()
+
+    # Convertir a escala de grises
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Aplicar filtro Gaussiano para reducir ruido
+    blurred = cv2.medianBlur(gray, 5)
+
+    # Aplicar la transformada de Hough para circunferencias
+    circles = cv2.HoughCircles(blurred, cv2.HOUGH_GRADIENT, dp=1.2, minDist=20,
+                               param1=50, param2=30, minRadius=10, maxRadius=50)
+
+    # Crear una copia de la imagen original para dibujar las circunferencias
+    image_with_circles = image.copy()
+
+    # Dibujar las circunferencias detectadas en la imagen
+    if circles is not None:
+        circles = np.uint16(np.around(circles))
+        for i in circles[0, :]:
+            # Dibujar el círculo externo
+            cv2.circle(image_with_circles, (i[0], i[1]), i[2], (0, 255, 0), 2)
+            # Dibujar el centro del círculo
+            cv2.circle(image_with_circles, (i[0], i[1]), 2, (0, 0, 255), 3)
+
+    # Mostrar la imagen resultante con la transformada de Hough para circunferencias
+    plt.figure(figsize=(10, 10))
+    plt.imshow(cv2.cvtColor(image_with_circles, cv2.COLOR_BGR2RGB))
+    plt.title('Detección de Circunferencias con la Transformada de Hough')
+    plt.axis('off')
+    plt.show()
