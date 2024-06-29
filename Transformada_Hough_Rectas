@@ -2,7 +2,6 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Cargar la imagen y convertirla a escala de grises
 image_path = 'C:\hop.png'
 image = cv2.imread(image_path)
 
@@ -11,25 +10,25 @@ if image is None:
 else:
     print("Imagen cargada correctamente.")
 
-    # Mostrar la imagen original
+    # Aca Mostramos la imagen Original
     plt.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
     plt.title('Imagen Original')
     plt.axis('off')
     plt.show()
 
-    # Convertir a escala de grises
+    # Aca convertimos a escala de grises para simplficar el proceso
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    # Aplicar detección de bordes usando el detector de Canny
+    # Aca Aplicamos la deteccion de bordes
     edges = cv2.Canny(gray, 50, 150, apertureSize=3)
 
-    # Aplicar la transformada de Hough para detectar líneas
+    # Aca aplicamos la transformada de Hough para detectar líneas
     lines = cv2.HoughLines(edges, 1, np.pi / 180, 100)  # Ajustar el umbral a 100
 
-    # Crear una copia de la imagen original para dibujar las líneas detectadas
+    # Ahora creamos una copia de la imagen original para dibujar las líneas detectadas
     image_with_lines = image.copy()
 
-    # Dibujar las líneas detectadas en la imagen
+    # Posteriormente dibujamos las líneas detectadas en la imagen
     if lines is not None:
         for line in lines:
             rho, theta = line[0]
@@ -43,7 +42,7 @@ else:
             y2 = int(y0 - 1000 * (a))
             cv2.line(image_with_lines, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
-    # Mostrar la imagen resultante con las líneas detectadas
+    # Por ultimo mostramos la imagen resultante con las líneas detectadas
     plt.figure(figsize=(10, 10))
     plt.imshow(cv2.cvtColor(image_with_lines, cv2.COLOR_BGR2RGB))
     plt.title('Detección de Líneas con la Transformada de Hough')
